@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Thermal Engine</title>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #9d00ff;
+            --bg-dark: #0a0a12;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Vibrant Animated Gradient Background */
+        .background-glow {
+            position: absolute;
+            width: 150vw;
+            height: 150vh;
+            background: radial-gradient(circle at 50% 50%, rgba(157, 0, 255, 0.15), rgba(0, 243, 255, 0.1), transparent 60%);
+            animation: pulseGlow 10s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(-2%, 2%); }
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-align: center;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .btn-predict {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.3);
+        }
+
+        /* Result Display Area */
+        #result-container {
+            margin-top: 25px;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: none;
+        }
+
+        .temp-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <div class="glass-panel">
+        <h2>Neural Thermal Engine</h2>
+        
+        <div class="input-group">
+            <label>X Coordinate (0.0 - 1.0)</label>
+            <input type="number" id="x-coord" step="0.1" value="0.5">
+        </div>
+        <div class="input-group">
+            <label>Y Coordinate (0.0 - 1.0)</label>
+            <input type="number" id="y-coord" step="0.1" value="0.5">
+        </div>
+        <div class="input-group">
+            <label>Z Coordinate (0.0 - 1.0)</label>
+            <input type="number" id="z-coord" step="0.1" value="0.5">
+        </div>
+        <div class="input-group">
+            <label>Time (Seconds)</label>
+            <input type="number" id="time-val" step="0.1" value="0.0">
+        </div>
+
+        <button class="btn-predict" onclick="runSimulation()">Execute Prediction</button>
+
+        <div id="result-container">
+            <div style="font-size: 12px; color: #888; margin-bottom: 5px; text-transform: uppercase;">Predicted Temperature</div>
+            <div class="temp-value" id="temp-display">--</div>
+        </div>
+    </div>
+
+    <script>
+        async function runSimulation() {
+            const x = parseFloat(document.getElementById('x-coord').value);
+            const y = parseFloat(document.getElementById('y-coord').value);
+            const z = parseFloat(document.getElementById('z-coord').value);
+            const time = parseFloat(document.getElementById('time-val').value);
+            
+            const resultContainer = document.getElementById('result-container');
+            const tempDisplay = document.getElementById('temp-display');
+
+            resultContainer.style.display = 'block';
+            tempDisplay.innerText = "Computing...";
+            tempDisplay.style.color = "white";
+
+            const payload = { x: x, y: y, z: z, time: time };
+
+            try {
+                // Firing the data to your local FastAPI Engine
+                const response = await fetch('http://127.0.0.1:8000/predict_temperature', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error("API Error");
+
+                const data = await response.json();
+                
+                // Displaying the result with formatting
+                tempDisplay.innerText = data.predicted_temperature.toFixed(4) + "°";
+                tempDisplay.style.color = "var(--neon-blue)";
+                
+            } catch (error) {
+                tempDisplay.innerText = "SERVER OFFLINE";
+                tempDisplay.style.color = "#ff3333";
+            }
+        }
+    </script>
+</body>
+</html>
