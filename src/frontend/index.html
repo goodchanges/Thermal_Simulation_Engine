@@ -182,7 +182,7 @@
 
             try {
                 // Firing the data to your local FastAPI Engine
-                const response = await fetch('http://127.0.0.1:8000/predict_temperature', {
+                const response = await fetch('https://thermal-api-ag3q.onrender.com/predict_temperature', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
